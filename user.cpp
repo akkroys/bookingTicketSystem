@@ -2,30 +2,40 @@
 
 
 void bookingTickets(concerts*& concert, string& login, tickets*& ticket) {
-	string concertID, amount;
-	int counter = 0;
-	bool flag;
-	int NumberOfConcerts = concertData(concert);
+	string concertID;
+	int counter = 0, amount = 0;
+	bool flag, flagT = false;
+	int numberOfConcerts = concertData(concert);
 	do {
 		flag = false;
 		while (!flag) {
-			cout << "Ââåäèòå ID ìåðîïðèÿòèÿ, áèëåòû íà êîòîðîå õîòèòå çàáðîíèðîâàòü: ";
+			cout << "\n\nÂâåäèòå ID ìåðîïðèÿòèÿ, áèëåòû íà êîòîðîå õîòèòå çàáðîíèðîâàòü: ";
 			cin >> concertID;
 			if ((concertID.size() != 5) || !isIdValid(concertID)) {
 				errorMessage();
 			}
 			else flag = true;
 		}
-		for (int i = 0; i < NumberOfConcerts; i++) {
+		for (int i = 0; i < numberOfConcerts; i++) {
 			if (concertID == concert[i].id) {
 				counter++;
-				cout << "Äîñòóïíîå êîëè÷åñòâî áèëåòîâ äëÿ áðîíè: " << concert[i].amount;
-				cout << "Ââåäèòå æåëàåìîå êîëè÷åñòâî áèëåòîâ: ";
-				cin >> amount;
-				flag = false;
+				cout << "Äîñòóïíîå êîëè÷åñòâî áèëåòîâ äëÿ áðîíè: " << concert[i].amount << endl;
+				do {
+					cout << "Ââåäèòå æåëàåìîå êîëè÷åñòâî áèëåòîâ: ";
+					amount = checkInt(amount);
+					if (amount > concert[i].amount || amount <= 0) {
+						cout << "Êîëè÷åñòâî çàáðîíèðîâàííûõ áèëåòîâ ìîæåò áûòü îò 1 äî " << concert[i].amount << "!" << endl;
+					}
+					else flagT = true;
+				} while (!flagT);
+				addTickets(login, concertID, amount);
+				concertData(concert);
+				concert[i].amount -= amount;
+				//rewriteConcerts(concert);
 				break;
 			}
 		}
+		if (counter == 0) cout << "Êîíöåðòà ñ òàêèì ID íåò â àêòóàëüíîì ñïèñêå.\n";
 	} while (!flag);
 }
 
@@ -61,7 +71,7 @@ void viewAllConcerts(concerts*& concert, string& login, tickets*& ticket) {
 			key = _getch();
 		} while (key != 48 && key != 49);
 
-		if (key == 49) bookingTickets(concert, login);
+		if (key == 49) bookingTickets(concert, login, ticket);
 	}
 }
 
@@ -216,7 +226,46 @@ void searchMenu(concerts*& concert) {
 	} while (key != 48);
 }
 
-void userProfile(users*& user, string& login, tickets*& ticket) {
+void boockedTickets(users*& user, concerts*& concert, string& login, tickets*& ticket) {
+	system("cls");
+	int numberOfUsers = usersData(user);
+	int numberOfBookings = tickectsData(ticket);
+	int numberOfConcerts = concertData(concert);
+	int counter = 0;
+	char key;
+	cout << "Ïîëüçîâàòåëü: " << login << endl;
+
+	cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
+		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Áèëåòû (øò)|   Ãîðîä ïðîâåäåíèÿ   |\n"
+		<< " ——————————————————————————————————————————————————————————————————————————————————————————\n";
+
+	for (int i = 0; i < numberOfBookings; i++) {
+		if (login == ticket[i].login) {
+			counter++;
+			for (int j = 0; j < numberOfConcerts; j++) {
+				if (ticket[i].concertID == concert[j].id) {
+					cout << "| " << setw(8) << left << concert[j].id << " | "
+						<< setw(25) << left << concert[j].name << " | "
+						<< setw(12) << left << concert[j].date << " | "
+						<< setw(10) << left << ticket[i].amount << " | "
+						<< setw(20) << left << concert[j].place << " | " << endl;
+					cout << " ——————————————————————————————————————————————————————————————————————————————————————————\n";
+					break;
+				}
+			}
+		}
+	}
+	if (!counter) cout << "Çàáðîíèðîâàííûå áèëåòû îòñóòñòâóþò!" << endl;
+
+	cout << "0. Âûõîä";
+	do {
+		key = _getch();
+	} while (key != 48);
+
+	_getch();
+}
+
+void userProfile(users*& user, concerts*& concert, string& login, tickets*& ticket) {
 	system("cls");
 	char key;
 
@@ -237,7 +286,7 @@ void userProfile(users*& user, string& login, tickets*& ticket) {
 		} while (key != 48 && key != 49 && key != 50 && key != 51);
 
 		if (key == 49);
-		if (key == 50);
+		if (key == 50) boockedTickets(user, concert, login, ticket);
 		if (key == 51);
 
 	} while (key != 48);
@@ -265,7 +314,7 @@ void userMenu(users*& user, concerts*& concert, string& login, tickets*& ticket)
 
 	if (key == 49) viewAllConcerts(concert, login, ticket);
 	if (key == 50) searchMenu(concert);
-	if (key == 51) userProfile(user, login, ticket);
+	if (key == 51) userProfile(user, concert, login, ticket);
 
 	} while (key != 48);
 

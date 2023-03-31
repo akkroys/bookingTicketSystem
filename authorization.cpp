@@ -230,16 +230,16 @@ pair <string, int> signIn(users*& user) {
 	return make_pair(login, role);
 }
 
-string entrance(users* user, concerts*& concert, tickets*& ticket) {
+void entrance(users* user, concerts*& concert, tickets*& ticket) {
 	int role = 0;
 	pair<string, int> ret = signIn(user);
 	role = ret.second;
 	string login = ret.first;
 	if (role == 1) {
-		adminMenu(user, concert, login);
+		adminMenu(user, concert, login, ticket);
 		system("cls");
 	}
 	else if (role == 2) {
-		userMenu(user, concert, login);
+		userMenu(user, concert, login, ticket);
 	}
 }

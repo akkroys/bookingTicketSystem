@@ -34,6 +34,27 @@ void addUser(string login, string password, string surname, string name, string 
 	addUsersData.close();
 }
 
+void rewriteUsers(users*& user) {
+	ifstream usersFile(USERS_INFO, ios::in);
+	char buffer[120];
+	int counter;
+	for (counter = 0; usersFile.getline(buffer, 120); counter++);
+	usersFile.close();
+	ofstream userFile (USERS_INFO, ios::trunc);
+	user = new users[counter];
+	for (int i = 0; i < counter; i++)
+	{
+		userFile << setw(15) << left << user[i].login
+			<< setw(35) << left << user[i].password
+			<< setw(17) << left << user[i].surname
+			<< setw(17) << left << user[i].name
+			<< setw(20) << left << user[i].email
+			<< setw(12) << left << user[i].phoneNumber
+			<< setw(3) << left << user[i].role << endl;
+	}
+	usersFile.close();
+}
+
 int concertData(concerts*& concert) {
 	ifstream concertFile(CONCERTS_INFO, ios::in);
 	char buffer[90];
@@ -66,6 +87,26 @@ void addConcert(string id, string name, string date, string priceForUnit, string
 	addConcertsData.close();
 }
 
+void rewriteConcerts(concerts*& concert) {
+	ifstream concertFile(CONCERTS_INFO, ios::in);
+	char buffer[90];
+	int counter;
+	for (counter = 0; concertFile.getline(buffer, 90); counter++);
+	concertFile.close();
+	ofstream concertsFile (CONCERTS_INFO, ios::trunc);
+	concert = new concerts[counter];
+
+	for (int i = 0; i < counter; i++) {
+		concertsFile << setw(8) << left << concert[i].id
+			<< setw(25) << left << concert[i].name
+			<< setw(12) << left << concert[i].date
+			<< setw(10) << left << concert[i].priceForUnit
+			<< setw(20) << left << concert[i].place
+			<< setw(8) << left << concert[i].amount << endl;
+	}
+	concertsFile.close();
+}
+
 int tickectsData(tickets*& ticket) {
 	ifstream ticketsFile(BOOKING_INFO, ios::in);
 	char buffer[120];
@@ -84,7 +125,7 @@ int tickectsData(tickets*& ticket) {
 	return counter;
 }
 
-void addTickets(string login, string concertID, string amount) {
+void addTickets(string login, string concertID, int amount) {
 	ofstream addTicketsData(BOOKING_INFO, ios::app);
 	addTicketsData << setw(15) << left << login
 		<< setw(8) << left << concertID

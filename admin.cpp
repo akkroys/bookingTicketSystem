@@ -128,7 +128,7 @@ void addNewConcert(concerts*& concert) {
 	addConcert(id, name, date, priceForUnit, place, amount);
 }
 
-void concertCRUD(concerts*& concert) {
+void concertCRUD(concerts*& concert, string& login, tickets*& ticket) {
 	char key;
 	do {
 		cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
@@ -146,7 +146,7 @@ void concertCRUD(concerts*& concert) {
 			key = _getch();
 		} while (!(key >= 48 && key <= 52));
 
-		if (key == 49) viewAllConcerts(concert);
+		if (key == 49) viewAllConcerts(concert, login, ticket);
 		if (key == 50) addNewConcert(concert);
 		if (key == 51);
 		if (key == 52);
@@ -154,7 +154,7 @@ void concertCRUD(concerts*& concert) {
 	} while (key != 48);
 }
 
-void adminMenu(users*& user, concerts*& concert, string& login) {
+void adminMenu(users*& user, concerts*& concert, string& login, tickets*& ticket) {
 	system("cls");
 	char key;
 	do {
@@ -174,11 +174,11 @@ void adminMenu(users*& user, concerts*& concert, string& login) {
 
 		if (key == 49) {
 			system("cls");
-			concertCRUD(concert);
+			concertCRUD(concert, login, ticket);
 		}
 		if (key == 50);
 		if (key == 51) {
-			userMenu(user, concert, login);
+			userMenu(user, concert, login, ticket);
 			system("cls");
 		}
 

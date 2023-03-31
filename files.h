@@ -11,6 +11,9 @@ int usersData(users*& user);
 int concertData(concerts*& concert);
 int tickectsData(tickets*& ticket);
 
+void rewriteUsers(users*& user);
+void rewriteConcerts(concerts*& concert);
+
 void addUser(string login, string password, string surname, string name, string email, string phone, int role);
 void addConcert(string id, string name, string date, string priceForUnit, string place, int amount);
-void addTickets(string login, string concertID, string amount);
+void addTickets(string login, string concertID, int amount);

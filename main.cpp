@@ -5,7 +5,7 @@ int main() {
 	setlocale(LC_ALL, "Russian");
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	users* user;
+	users* user{};
 	concerts* concert;
 	tickets* ticket;
 	char key;

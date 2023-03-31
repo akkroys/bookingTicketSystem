@@ -2,8 +2,8 @@
 
 #include "user.h"
 
-void adminMenu(users*& user, concerts*& concert, string& login);
-void concertCRUD(concerts*& concert);
+void adminMenu(users*& user, concerts*& concert, string& login, tickets*& ticket);
+void concertCRUD(concerts*& concert, string& login, tickets*& ticket);
 string enterId(concerts*& concert);
 string enterConcertName();
 string enterDate();

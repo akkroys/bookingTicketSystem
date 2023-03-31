@@ -41,4 +41,4 @@ string enterEmail(users*& user);
 string enterPhone();
 void registration(users*& user);
 pair <string, int> signIn(users*& user);
-string entrance(users* user, concerts*& concert, tickets*& ticket);
+void entrance(users* user, concerts*& concert, tickets*& ticket);
