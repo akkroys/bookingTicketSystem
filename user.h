@@ -11,6 +11,7 @@ void searchByName(concerts*& concert);
 void searchByPlace(concerts*& concert);
 void searchByPrice(concerts*& concert);
 void userProfile(users*& user, concerts*& concert, string& login, tickets*& ticket);
+void personalInformation(users*& user);
 
 void bookingTickets(concerts*& concert, string& login, tickets*& ticket);
 void boockedTickets(users*& user, concerts*& concert, string& login, tickets*& ticket);

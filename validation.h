@@ -14,3 +14,5 @@ bool isDateValid(string& date);
 bool isPriceValid(string& price);
 extern void errorMessage();
 string hiddenPassword();
+string containsOnlyLetters(string str);
+string checkFirstLetter(string name);

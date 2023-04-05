@@ -265,6 +265,10 @@ void boockedTickets(users*& user, concerts*& concert, string& login, tickets*& t
 	_getch();
 }
 
+void personalInformation(users*& user) {
+
+}
+
 void userProfile(users*& user, concerts*& concert, string& login, tickets*& ticket) {
 	system("cls");
 	char key;

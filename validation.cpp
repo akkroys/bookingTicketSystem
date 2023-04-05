@@ -55,6 +55,38 @@ int checkInt(int a) {
     return a;
 }
 
+string containsOnlyLetters(string str) {
+    while (true) {
+        cin >> str;
+        if (str.find_first_not_of("àáâãäå¸æçèéêëìíîïðñòóôõö÷øùúûüýþÿÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß-") ==
+            string::npos) {
+            break;
+        }
+        else {
+            errorMessage();
+            continue;
+        }
+    }
+    return str;
+}
+
+string checkFirstLetter(string name) {
+    char a;
+    if (name[0] >= 160 && name[0] <= 175) {
+        a = name[0] - 32;
+        name[0] = (char)a;
+    }
+    else if (name[0] >= 224 && name[0] <= 239) {
+        a = name[0] - 60;
+        name[0] = a;
+    }
+    else if (name[0] == 241) {
+        a = name[0] - 1;
+        name[0] = a;
+    }
+    return name;
+}
+
 bool isDateValid(string& date) {
     regex statement("/(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})/");
     bool check = regex_match(date, statement);
@@ -70,7 +102,6 @@ bool isPriceValid(string& price) {
 bool isPasswordValid(string& password) {
     regex statement("^.*(?=.{7,20})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&?_]).*$");
     bool check = regex_match(password, statement);
-    check = true;
     return check;
 }
 

@@ -61,15 +61,15 @@ string enterPassword() {
 	return password;
 }
 
-string enterSurname() { //сделать проверку на русском
-	string surname;
+string enterSurname() { // добавить большую букву мб надо?
+	string surname = "";
 	bool flag;
 	do {
 		flag = false;
 		while (!flag) {
 			cout << "¬ведите фамилию: ";
-			cin >> surname;
-			if ((surname.size() > 17 || surname.size() < 1) || !isNameValid(surname)) {
+			surname = containsOnlyLetters(surname);
+			if ((surname.size() > 17 || surname.size() < 1)) {
 				errorMessage();
 				flag = false;
 			}
@@ -79,15 +79,15 @@ string enterSurname() { //сделать проверку на русском
 	return surname;
 }
 
-string enterName() { //проверка на русском
-	string name;
+string enterName() {
+	string name = "";
 	bool flag;
 	do {
 		flag = false;
 		while (!flag) {
 			cout << "¬ведите им€: ";
-			cin >> name;
-			if ((name.size() > 17 || name.size() < 1) || !isNameValid(name)) {
+			name = containsOnlyLetters(name);
+			if ((name.size() > 17 || name.size() < 1)) {
 				errorMessage();
 				flag = false;
 			}
