@@ -55,6 +55,38 @@ void rewriteUsers(users*& user) {
 	usersFile.close();
 }
 
+void editStrPassword(string userPassword, string newPassword, users*& user, string loginUs) {
+	fstream file(USERS_INFO, ios::in | ios::out);
+
+	if (file.is_open()) {
+		streampos oldPos = file.tellg();
+		string line;
+		while (getline(file, line))
+		{
+			stringstream ss(line);
+			string login, password, surname, name, email, phoneNumber;
+			int role;
+			ss >> login >> password >> surname >> name >> email >> phoneNumber >> role;
+			if (login == loginUs) {
+				if (password == userPassword)
+				{
+					file.seekp(oldPos);
+					file << setw(15) << left << login
+						<< setw(35) << left << newPassword
+						<< setw(17) << left << surname
+						<< setw(17) << left << name
+						<< setw(20) << left << email
+						<< setw(12) << left << phoneNumber
+						<< setw(3) << left << role << endl;
+					break;
+				}
+			}
+			oldPos = file.tellg();
+		}
+	}
+	file.close();
+}
+
 int concertData(concerts*& concert) {
 	ifstream concertFile(CONCERTS_INFO, ios::in);
 	char buffer[90];
@@ -87,13 +119,44 @@ void addConcert(string id, string name, string date, string priceForUnit, string
 	addConcertsData.close();
 }
 
+void editStrConcert(string concertID, int newAmount)
+{
+	fstream file(CONCERTS_INFO, ios::in | ios::out);
+
+	if (file.is_open()) {
+		streampos oldPos = file.tellg();
+		string line;
+		while (getline(file, line))
+		{
+			stringstream ss(line);
+			string id, name, date, priceForUnit, place;
+			int amount;
+			ss >> id >> name >> date >> priceForUnit >> place >> amount;
+
+			if (id == concertID)
+			{
+				file.seekp(oldPos);
+				file << setw(8) << left << id
+					<< setw(25) << left << name
+					<< setw(12) << left << date
+					<< setw(10) << left << priceForUnit
+					<< setw(20) << left << place
+					<< setw(8) << left << newAmount << endl;
+				break;
+			}
+			oldPos = file.tellg();
+		}
+	}
+	file.close();
+}
+
 void rewriteConcerts(concerts*& concert) {
 	ifstream concertFile(CONCERTS_INFO, ios::in);
 	char buffer[90];
 	int counter;
 	for (counter = 0; concertFile.getline(buffer, 90); counter++);
 	concertFile.close();
-	ofstream concertsFile (CONCERTS_INFO, ios::trunc);
+	ofstream concertsFile (CONCERTS_INFO);
 	concert = new concerts[counter];
 
 	for (int i = 0; i < counter; i++) {
@@ -131,4 +194,8 @@ void addTickets(string login, string concertID, int amount) {
 		<< setw(8) << left << concertID
 		<< setw(8) << left << amount << endl;
 	addTicketsData.close();
+}
+
+void deleteConcert(string id, string filename) {
+
 }

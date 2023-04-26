@@ -2,6 +2,8 @@
 
 #include "authorization.h"
 #include <fstream>
+#include <sstream>
+#include <vector>
 
 const string USERS_INFO = "users.txt";
 const string CONCERTS_INFO = "concerts.txt";
@@ -11,9 +13,11 @@ int usersData(users*& user);
 int concertData(concerts*& concert);
 int tickectsData(tickets*& ticket);
 
-void rewriteUsers(users*& user);
-void rewriteConcerts(concerts*& concert);
+void editStrConcert(string concertID, int newAmount);
+void editStrPassword(string userPassword, string newPassword, users*& user, string login);
 
 void addUser(string login, string password, string surname, string name, string email, string phone, int role);
 void addConcert(string id, string name, string date, string priceForUnit, string place, int amount);
 void addTickets(string login, string concertID, int amount);
+
+void deleteConcert(string id, string filename);

@@ -32,7 +32,7 @@ string enterConcertName() {
 
 	do {
 		flag = false;
-		cout << "Ââåäèòå èñïîëíèòåëÿ (äî 25 ñèìâîëîâ): ";
+		cout << "Ââåäèòå èñïîëíèòåëÿ (äî 25 ñèìâîëîâ îäíèì ñëîâîì): ";
 		cin >> name;
 
 		if (name.size() > 25 || name.size() < 1) {
@@ -44,32 +44,31 @@ string enterConcertName() {
 	return name;
 }
 
-string enterDate() { //ïğîâåğêà äàòû îáğàáîòàòü
+string enterDate() {
 	bool flag;
 	string date;
 
 	do {
 		flag = false;
-		cout << "Ââåäèòå äàòó ìåğîïğèÿòèÿ (â ôîğìàòå XX/XX/XXXX): ";
+		cout << "Ââåäèòå äàòó ìåğîïğèÿòèÿ (â ôîğìàòå ÃÃÃÃ/ÌÌ/ÄÄ): ";
 		cin >> date;
-		flag = true;
-		//if (!isDateValid(date)) {
-		//	errorMessage();
-		//}
-		//else flag = true;
+		if (!isDateValid(date)) {
+			errorMessage();
+		}
+		else flag = true;
 	} while (!flag);
 
 	return date;
 }
 
-string enterPlace() { //äîäåëàòü ïğîâåğêó ââîäà
+string enterPlace() {
 	bool flag;
 	string place;
 
 	do {
 		flag = false;
 		cout << "Ââåäèòå ãîğîä ïğîâåäåíèÿ (äî 20 ñèìâîëîâ): ";
-		cin >> place;
+		place = containsOnlyLetters(place);
 
 		if (place.size() > 20 || place.size() < 1) {
 			errorMessage();
@@ -77,6 +76,7 @@ string enterPlace() { //äîäåëàòü ïğîâåğêó ââîäà
 		else flag = true;
 	} while (!flag);
 
+	place = fixFirstLetter(place);
 	return place;
 }
 
@@ -128,6 +128,50 @@ void addNewConcert(concerts*& concert) {
 	addConcert(id, name, date, priceForUnit, place, amount);
 }
 
+void deleteAConcert(concerts*& concert) {
+	int numberOfConcerts = concertData(concert);
+	char key;
+	string id;
+	int counter = 0;
+
+	cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
+		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Öåíà (BYN) |   Ãîğîä ïğîâåäåíèÿ   |\n"
+		<< " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	if (numberOfConcerts <= 0) {
+		cout << "Ñïèñîê êîíöåğòîâ ïóñò!" << endl;
+		cout << "0. Âûõîä";
+		do {
+			key = _getch();
+		} while (key != 48);
+		system("cls");
+	}
+	else {
+		for (int i = 0; i < numberOfConcerts; i++) {
+			cout << "| " << setw(8) << left << concert[i].id << " | "
+				<< setw(25) << left << concert[i].name << " | "
+				<< setw(12) << left << concert[i].date << " | "
+				<< setw(10) << left << concert[i].priceForUnit << " | "
+				<< setw(20) << left << concert[i].place << " | " << endl;
+			cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+		}
+		cout << "Ââåäèòå ID êîíöåğòà, êîòîğûé õîòèòå óäàëèòü: ";
+		cin >> id;
+		for (int i = 0; i <= numberOfConcerts; i++) {
+			if (id == concert[i].id) {
+				counter++;
+				deleteConcert(id, CONCERTS_INFO);
+				cout << "Êîíöåğò áûë óäàëåí èç îáùåãî ñïèñêà!" << endl;
+			}
+		}
+		if (!counter) cout << "Êîíöåğòà ñ òàêèì ID íå íàéäåíî!" << endl;
+		cout << "0. Âûõîä";
+		do {
+			key = _getch();
+		} while (key != 48);
+		system("cls");
+	}
+}
+
 void concertCRUD(concerts*& concert, string& login, tickets*& ticket) {
 	char key;
 	do {
@@ -137,8 +181,7 @@ void concertCRUD(concerts*& concert, string& login, tickets*& ticket) {
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t|   1. Ïğîñìîòğåòü ñïèñîê êîíöåğòîâ   |" << endl
 			<< "\t\t\t\t\t|   2. Äîáàâèòü íîâûé êîíöåğò         |" << endl
-			<< "\t\t\t\t\t|   3. Îòğåäàêòèğîâàòü äàííûå         |" << endl
-			<< "\t\t\t\t\t|   4. Óäàëèòü êîíöåğò                |" << endl
+			<< "\t\t\t\t\t|   3. Óäàëèòü êîíöåğò                |" << endl
 			<< "\t\t\t\t\t|   0. Âûõîä                          |" << endl;
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t———————————————————————————————————————\n\n\n\n\n\n\n\n\n\n\n";
@@ -148,9 +191,39 @@ void concertCRUD(concerts*& concert, string& login, tickets*& ticket) {
 
 		if (key == 49) viewAllConcerts(concert, login, ticket);
 		if (key == 50) addNewConcert(concert);
-		if (key == 51);
-		if (key == 52);
+		if (key == 51) deleteAConcert(concert);
 
+	} while (key != 48);
+}
+
+void usersDatabase(users*& user, concerts*& concert, tickets*& ticket) {
+	char key;
+	int numberOfUsers = usersData(user);
+	int numberOfBookings = tickectsData(ticket);
+	int numberOfConcerts = concertData(concert);
+
+	cout << " ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————\n"
+		<< "|      Ëîãèí      |      Ôàìèëèÿ      |        Èìÿ        |        Email         | Íîìåğ òåëåô. | ID êîíö.|  Áèëåòû  |\n"
+		<< " ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————\n";
+	for (int i = 0; i < numberOfUsers; i++) {
+		if (user[i].role == 2) { // +  || user[i].role == 1 ?
+			for (int j = 0; j < numberOfBookings; j++) {
+				if (user[i].login == ticket[j].login) {
+					cout << "| " << setw(15) << left << user[i].login << " | "
+						<< setw(17) << left << user[i].surname << " | "
+						<< setw(17) << left << user[i].name << " | "
+						<< setw(20) << left << user[i].email << " | "
+						<< setw(12) << left << user[i].phoneNumber << " | "
+						<< setw(7) << left << ticket[j].concertID << " | " 
+						<< setw(7) << left << ticket[j].amount << " | " << endl;
+					cout << " ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————\n";
+				}
+			}
+		}
+	}
+	cout << "0. Âûõîä";
+	do {
+		key = _getch();
 	} while (key != 48);
 }
 
@@ -176,7 +249,10 @@ void adminMenu(users*& user, concerts*& concert, string& login, tickets*& ticket
 			system("cls");
 			concertCRUD(concert, login, ticket);
 		}
-		if (key == 50);
+		if (key == 50) {
+			system("cls");
+			usersDatabase(user, concert, ticket);
+		}
 		if (key == 51) {
 			userMenu(user, concert, login, ticket);
 			system("cls");

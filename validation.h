@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <regex>
 
+bool isRussianCapitalLetter(char letter);
+string fixFirstLetter(string input);
 bool isLoginValid(string& login);
 bool isNameValid(string& name);
 bool isPasswordValid(string& password);
@@ -15,4 +17,3 @@ bool isPriceValid(string& price);
 extern void errorMessage();
 string hiddenPassword();
 string containsOnlyLetters(string str);
-string checkFirstLetter(string name);

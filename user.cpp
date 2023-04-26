@@ -29,15 +29,65 @@ void bookingTickets(concerts*& concert, string& login, tickets*& ticket) {
 					else flagT = true;
 				} while (!flagT);
 				addTickets(login, concertID, amount);
-				concertData(concert);
-				concert[i].amount -= amount;
-				//rewriteConcerts(concert);
+				editStrConcert(concertID, concert[i].amount - amount);
 				break;
 			}
 		}
 		if (counter == 0) cout << "Êîíöåðòà ñ òàêèì ID íåò â àêòóàëüíîì ñïèñêå.\n";
 	} while (!flag);
 }
+
+string currentDateTime() {
+	time_t now = time(nullptr);
+
+	tm localtime;
+	localtime_s(&localtime, &now);
+
+	stringstream ss;
+	ss << put_time(&localtime, "%Y/%m/%d");
+
+	return ss.str();
+}
+
+void currentList(concerts*& concert, string& login, tickets*& ticket) {
+	system("cls");
+	string currDate = currentDateTime();
+	int numberOfConcerts = concertData(concert);
+	char key;
+
+	cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
+		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Öåíà (BYN) |   Ãîðîä ïðîâåäåíèÿ   |\n"
+		<< " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	if (numberOfConcerts <= 0) {
+		cout << "Ñïèñîê êîíöåðòîâ ïóñò!" << endl;
+		cout << "0. Âûõîä";
+		do {
+			key = _getch();
+		} while (key != 48);
+		system("cls");
+	}
+	else {
+		for (int i = 0; i < numberOfConcerts; i++) {
+			if (concert[i].date >= currDate) {
+				cout << "| " << setw(8) << left << concert[i].id << " | "
+					<< setw(25) << left << concert[i].name << " | "
+					<< setw(12) << left << concert[i].date << " | "
+					<< setw(10) << left << concert[i].priceForUnit << " | "
+					<< setw(20) << left << concert[i].place << " | " << endl;
+				cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+			}
+		}
+
+		cout << "1. Çàáðîíèðîâàòü áèëåòû;" << endl
+			<< "0. Âûõîä";
+		do {
+			key = _getch();
+		} while (key != 48 && key != 49 && key != 50);
+
+		if (key == 49) bookingTickets(concert, login, ticket);
+	}
+}
+
 
 void viewAllConcerts(concerts*& concert, string& login, tickets*& ticket) {
 	system("cls");
@@ -66,12 +116,13 @@ void viewAllConcerts(concerts*& concert, string& login, tickets*& ticket) {
 			cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
 		}
 
-		cout << "1. Çàáðîíèðîâàòü áèëåòû;" << endl << "0. Âûõîä";
+			cout << "1. Ïðîñìîòðåòü ñïèñîê àêòóàëüíûõ êîíöåðòîâ;" << endl
+			<< "0. Âûõîä";
 		do {
 			key = _getch();
-		} while (key != 48 && key != 49);
+		} while (key != 48 && key != 49 && key != 50);
 
-		if (key == 49) bookingTickets(concert, login, ticket);
+		if (key == 49) currentList(concert, login, ticket);
 	}
 }
 
@@ -141,6 +192,15 @@ void searchByPlace(concerts*& concert) {
 	} while (key != 48);
 }
 
+double string_to_double(const string& s)
+{
+	istringstream i(s);
+	double x;
+	if (!(i >> x))
+		return 0;
+	return x;
+}
+
 void searchByPrice(concerts*& concert) {
 	system("cls");
 	int numberOfConcerts = concertData(concert);
@@ -165,7 +225,7 @@ void searchByPrice(concerts*& concert) {
 	do {
 		flag = false;
 		while (!flag) {
-			cout << "Ââåäèòå ìèíèìàëüíóþ æåëàåìóþ ñòîèìîñòü: ";
+			cout << "Ââåäèòå ìàêñèìàëüíóþ æåëàåìóþ ñòîèìîñòü: ";
 			cin >> maxPrice;
 			if ((maxPrice.size() > 17 || maxPrice.size() < 1) || !isIdValid(maxPrice)) {
 				errorMessage();
@@ -176,7 +236,8 @@ void searchByPrice(concerts*& concert) {
 	} while (!flag);
 
 	for (int i = 0; i < numberOfConcerts; i++) {
-		if (concert[i].priceForUnit <= maxPrice && concert[i].priceForUnit >= minPrice) {
+		if (string_to_double(concert[i].priceForUnit) <= string_to_double(maxPrice) 
+			&& string_to_double(concert[i].priceForUnit) >= string_to_double(minPrice)) {
 			counter++;
 			if (counter == 1) {
 				cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
@@ -191,7 +252,7 @@ void searchByPrice(concerts*& concert) {
 			cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
 		}
 	}
-	if (!counter) cout << "Íè÷åãî íå íàéäåíî!";
+	if (!counter) cout << "Íè÷åãî íå íàéäåíî!" << endl;
 
 	cout << "0. Âûõîä";
 	do {
@@ -226,72 +287,93 @@ void searchMenu(concerts*& concert) {
 	} while (key != 48);
 }
 
-void boockedTickets(users*& user, concerts*& concert, string& login, tickets*& ticket) {
+void sortByAlphabet(concerts*& concert) {
 	system("cls");
-	int numberOfUsers = usersData(user);
-	int numberOfBookings = tickectsData(ticket);
 	int numberOfConcerts = concertData(concert);
-	int counter = 0;
 	char key;
-	cout << "Ïîëüçîâàòåëü: " << login << endl;
-
+	string temp;
+	concerts* temporary = new concerts[numberOfConcerts];
+	for (int i = 0; i < numberOfConcerts; i++) {
+		temporary[i] = concert[i];
+	}
 	cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
-		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Áèëåòû (øò)|   Ãîðîä ïðîâåäåíèÿ   |\n"
-		<< " ——————————————————————————————————————————————————————————————————————————————————————————\n";
-
-	for (int i = 0; i < numberOfBookings; i++) {
-		if (login == ticket[i].login) {
-			counter++;
-			for (int j = 0; j < numberOfConcerts; j++) {
-				if (ticket[i].concertID == concert[j].id) {
-					cout << "| " << setw(8) << left << concert[j].id << " | "
-						<< setw(25) << left << concert[j].name << " | "
-						<< setw(12) << left << concert[j].date << " | "
-						<< setw(10) << left << ticket[i].amount << " | "
-						<< setw(20) << left << concert[j].place << " | " << endl;
-					cout << " ——————————————————————————————————————————————————————————————————————————————————————————\n";
-					break;
-				}
-			}
+		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Öåíà (BYN) |   Ãîðîä ïðîâåäåíèÿ   |\n"
+		<< " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	for (int i = 0; i < numberOfConcerts; i++) {
+		int j = i;
+		while (j > 0 && temporary[j].name < temporary[j - 1].name) {
+			swap(temporary[j], temporary[j - 1]);
+			j--;
 		}
 	}
-	if (!counter) cout << "Çàáðîíèðîâàííûå áèëåòû îòñóòñòâóþò!" << endl;
-
+	for (int i = 0; i < numberOfConcerts; i++) {
+		cout << "| " << setw(8) << left << temporary[i].id << " | "
+			<< setw(25) << left << temporary[i].name << " | "
+			<< setw(12) << left << temporary[i].date << " | "
+			<< setw(10) << left << temporary[i].priceForUnit << " | "
+			<< setw(20) << left << temporary[i].place << " | " << endl;
+		cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	}
 	cout << "0. Âûõîä";
 	do {
 		key = _getch();
 	} while (key != 48);
-
-	_getch();
 }
 
-void personalInformation(users*& user) {
-
+void sortByDate(concerts*& concert) {
+	system("cls");
+	int numberOfConcerts = concertData(concert);
+	char key;
+	string temp;
+	concerts* temporary = new concerts[numberOfConcerts];
+	for (int i = 0; i < numberOfConcerts; i++) {
+		temporary[i] = concert[i];
+	}
+	cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
+		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Öåíà (BYN) |   Ãîðîä ïðîâåäåíèÿ   |\n"
+		<< " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	for (int i = 0; i < numberOfConcerts; i++) {
+		int j = i;
+		while (j > 0 && temporary[j].date < temporary[j - 1].date) {
+			swap(temporary[j], temporary[j - 1]);
+			j--;
+		}
+	}
+	for (int i = 0; i < numberOfConcerts; i++) {
+		cout << "| " << setw(8) << left << temporary[i].id << " | "
+			<< setw(25) << left << temporary[i].name << " | "
+			<< setw(12) << left << temporary[i].date << " | "
+			<< setw(10) << left << temporary[i].priceForUnit << " | "
+			<< setw(20) << left << temporary[i].place << " | " << endl;
+		cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	}
+	cout << "0. Âûõîä";
+	do {
+		key = _getch();
+	} while (key != 48);
 }
 
-void userProfile(users*& user, concerts*& concert, string& login, tickets*& ticket) {
+void sortMenu(concerts*& concert) {
 	system("cls");
 	char key;
 
 	do {
 		cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
 		cout << "\t\t\t\t\t|                                     |\n";
-		cout << "\t\t\t\t\t|             ÌÎÉ ÏÐÎÔÈËÜ             |\n";
+		cout << "\t\t\t\t\t|             ÑÎÐÒÈÐÎÂÊÀ              |\n";
 		cout << "\t\t\t\t\t|                                     |\n";
-		cout << "\t\t\t\t\t|   1. Ëè÷íàÿ èíôîðìàöèÿ              |" << endl
-			<< "\t\t\t\t\t|   2. Çàáðîíèðîâàííûå áèëåòû         |" << endl
-			<< "\t\t\t\t\t|   3. Èçìåíèòü ïàðîëü                |" << endl
+		cout << "\t\t\t\t\t|   1. Â àëôàâèòíîì ïîðÿäêå           |" << endl
+			<< "\t\t\t\t\t|   2. Ïî äàòå ïðîâåäåíèÿ             |" << endl
 			<< "\t\t\t\t\t|   0. Âûõîä                          |" << endl;
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t———————————————————————————————————————\n\n\n\n\n\n\n\n\n\n\n";
 
 		do {
 			key = _getch();
-		} while (key != 48 && key != 49 && key != 50 && key != 51);
+		} while (key != 48 && key != 49 && key != 50);
 
-		if (key == 49);
-		if (key == 50) boockedTickets(user, concert, login, ticket);
-		if (key == 51);
+		if (key == 49) sortByAlphabet(concert);
+		if (key == 50) sortByDate(concert);
 
 	} while (key != 48);
 }
@@ -307,18 +389,20 @@ void userMenu(users*& user, concerts*& concert, string& login, tickets*& ticket)
 	cout << "\t\t\t\t\t|                                     |\n";
 	cout << "\t\t\t\t\t|   1. Ïðîñìîòðåòü ñïèñîê êîíöåðòîâ   |" << endl
 		<< "\t\t\t\t\t|   2. Ïîèñê ïî ñïèñêó êîíöåðòîâ      |" << endl
-		<< "\t\t\t\t\t|   3. Ìîé ïðîôèëü                    |" << endl
+		<< "\t\t\t\t\t|   3. Ñîðòèðîâêà ñïèñêà êîíöåðòîâ    |" << endl
+		<< "\t\t\t\t\t|   4. Ìîé ïðîôèëü                    |" << endl
 		<< "\t\t\t\t\t|   0. Âûõîä                          |" << endl;
 	cout << "\t\t\t\t\t|                                     |\n";
 	cout << "\t\t\t\t\t———————————————————————————————————————\n\n\n\n\n\n\n\n\n\n\n";
 
 	do {
 		key = _getch();
-	} while (key != 48 && key != 49 && key != 50 && key != 51);
+	} while (key != 48 && key != 49 && key != 50 && key != 51 && key!= 52);
 
 	if (key == 49) viewAllConcerts(concert, login, ticket);
 	if (key == 50) searchMenu(concert);
-	if (key == 51) userProfile(user, concert, login, ticket);
+	if (key == 51) sortMenu(concert);
+	if (key == 52) userProfile(user, concert, login, ticket);
 
 	} while (key != 48);
 

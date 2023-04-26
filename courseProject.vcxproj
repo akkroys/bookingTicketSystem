@@ -131,6 +131,7 @@
     <ClCompile Include="authorization.cpp" />
     <ClCompile Include="files.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="profile.cpp" />
     <ClCompile Include="user.cpp" />
     <ClCompile Include="validation.cpp" />
   </ItemGroup>

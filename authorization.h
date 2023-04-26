@@ -5,8 +5,10 @@
 #include <conio.h>
 #include <iomanip>
 #include <Windows.h>
+#include <string>
 using namespace std;
 
+const string keyWord = "concertAdmin23";
 
 struct users {
     string login,
@@ -29,8 +31,8 @@ struct concerts {
 
 struct tickets {
     string login,
-        concertID,
-        amount;
+        concertID;
+    int  amount;
 };
 
 string enterLogin(users*& user);
@@ -42,3 +44,4 @@ string enterPhone();
 void registration(users*& user);
 pair <string, int> signIn(users*& user);
 void entrance(users* user, concerts*& concert, tickets*& ticket);
+void changePassword(users*& user, string& login);

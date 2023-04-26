@@ -39,7 +39,7 @@ string enterPassword() {
 	do {
 		flag = false;
 		while (!flag) {
-			cout << "Введите пароль (от 7 до 20 символов (цифры, символы и буквы латинского алфавита): ";
+			cout << "Введите пароль (от 7 до 20 символов (цифры, символы и буквы латинского алфавита (обоих регистров))): ";
 			password = hiddenPassword();
 			if ((password.size() > 15 || password.size() < 7) || !isPasswordValid(password)) {
 				errorMessage();
@@ -61,6 +61,38 @@ string enterPassword() {
 	return password;
 }
 
+void changePassword(users*& user, string& login) {
+	system("cls");
+	bool flagPassword = false;
+	int numberOfUsers = usersData(user);
+	char key;
+	string password;
+	//cout << "Введите старый пароль: ";
+	//password = hiddenPassword();
+	for (int i = 0; i < numberOfUsers; i++) {
+		if (login == user[i].login) {
+			while (!flagPassword) {
+				cout << "Введите старый пароль: ";
+				password = hiddenPassword();
+				if (user[i].password != md5hash_to_string(MD5(&password[0], password.size()))) {
+					cout << "Пароль от учетной записи введен неверно. Попробуйте ещё раз!\n";
+				}
+				else {
+					flagPassword = true;
+				}
+			}
+			cout << "Изменение пароля: " << endl;
+			password = enterPassword();
+			editStrPassword(user[i].password, md5hash_to_string(MD5(&password[0], password.size())), user, login);
+		}
+	}
+	cout << "Пароль был успешно изменен!" << endl;
+	cout << "0. Выход";
+	do {
+		key = _getch();
+	} while (key != 48);
+}
+
 string enterSurname() { // добавить большую букву мб надо?
 	string surname = "";
 	bool flag;
@@ -76,6 +108,7 @@ string enterSurname() { // добавить большую букву мб надо?
 			else flag = true;
 		}
 	} while (!flag);
+	surname = fixFirstLetter(surname);
 	return surname;
 }
 
@@ -94,6 +127,7 @@ string enterName() {
 			else flag = true;
 		}
 	} while (!flag);
+	name = fixFirstLetter(name);
 	return name;
 }
 
@@ -145,29 +179,34 @@ void registration(users*& user)
 {
 	system("cls");
 	int key, role;
-	string login, surname, name, password, passwordConfirm, email, phoneNumber;
+	string login, surname, name, password, passwordConfirm, email, phoneNumber, keyW;
 
-	cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
-	cout << "\t\t\t\t\t|                                     |\n";
-	cout << "\t\t\t\t\t|   Зарегистрироваться в качестве:    |\n";
-	cout << "\t\t\t\t\t|                                     |\n";
-	cout << "\t\t\t\t\t|   1. администратора                 |" << endl
-		<< "\t\t\t\t\t|   2. пользователя                   |" << endl
-		<< "\t\t\t\t\t|   0. Выход                          |" << endl;
-	cout << "\t\t\t\t\t|                                     |\n";
-	cout << "\t\t\t\t\t———————————————————————————————————————\n";
+	//cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
+	//cout << "\t\t\t\t\t|                                     |\n";
+	//cout << "\t\t\t\t\t|   Зарегистрироваться в качестве:    |\n";
+	//cout << "\t\t\t\t\t|                                     |\n";
+	//cout << "\t\t\t\t\t|   1. администратора                 |" << endl
+	//	<< "\t\t\t\t\t|   2. пользователя                   |" << endl
+	//	<< "\t\t\t\t\t|   0. Выход                          |" << endl;
+	//cout << "\t\t\t\t\t|                                     |\n";
+	//cout << "\t\t\t\t\t———————————————————————————————————————\n";
 
-	do {
-		key = _getch();
-	} while (key != 48 && key != 49 && key != 50);
+	//do {
+	//	key = _getch();
+	//} while (key != 48 && key != 49 && key != 50);
 
-	if (key == 49) {
-		role = 1;
-	}
-	else if (key == 50) {
-		role = 2;
-	}
-	else return;
+	//if (key == 49) {
+	//	role = 1;
+	//}
+	//else if (key == 50) {
+	//	role = 2;
+	//}
+	//else return;
+
+	cout << "Введите ключевое слово (за неимением такового введите любой другой символ): ";
+	cin >> keyW;
+	if (keyW == keyWord) role = 1;
+	else role = 2;
 
 	login = enterLogin(user);
 	password = enterPassword();
