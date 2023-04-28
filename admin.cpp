@@ -47,12 +47,16 @@ string enterConcertName() {
 string enterDate() {
 	bool flag;
 	string date;
+	int counter = 0;
 
 	do {
+		counter = 0;
 		flag = false;
 		cout << "Ââåäèòå äàòó ìåðîïðèÿòèÿ (â ôîðìàòå ÃÃÃÃ/ÌÌ/ÄÄ): ";
 		cin >> date;
 		if (!isDateValid(date)) {
+			counter++;
+			if(counter == 1)
 			errorMessage();
 		}
 		else flag = true;
@@ -129,6 +133,7 @@ void addNewConcert(concerts*& concert) {
 }
 
 void deleteAConcert(concerts*& concert) {
+	system("cls");
 	int numberOfConcerts = concertData(concert);
 	char key;
 	string id;
@@ -156,25 +161,49 @@ void deleteAConcert(concerts*& concert) {
 		}
 		cout << "Ââåäèòå ID êîíöåðòà, êîòîðûé õîòèòå óäàëèòü: ";
 		cin >> id;
-		for (int i = 0; i <= numberOfConcerts; i++) {
+		int indexToRemove = -1;
+		for (int i = 0; i < numberOfConcerts; i++) {
 			if (id == concert[i].id) {
 				counter++;
-				deleteConcert(id, CONCERTS_INFO);
-				cout << "Êîíöåðò áûë óäàëåí èç îáùåãî ñïèñêà!" << endl;
+				indexToRemove = i;
+				}
 			}
-		}
 		if (!counter) cout << "Êîíöåðòà ñ òàêèì ID íå íàéäåíî!" << endl;
+		for (int j = indexToRemove; j < numberOfConcerts - 1; j++) {
+			concert[j].id = concert[j + 1].id;
+			concert[j].name = concert[j + 1].name;
+			concert[j].date = concert[j + 1].date;
+			concert[j].priceForUnit = concert[j + 1].priceForUnit;
+			concert[j].place = concert[j + 1].place;
+			concert[j].amount = concert[j + 1].amount;
+		}
+		--numberOfConcerts;
+		cout << "Êîíöåðò áûë óäàëåí!" << endl;
+		ofstream concertsFile(CONCERTS_INFO);
+
+		for (int i = 0; i < numberOfConcerts; i++) {
+			concertsFile << setw(8) << left << concert[i].id
+				<< setw(25) << left << concert[i].name
+				<< setw(12) << left << concert[i].date
+				<< setw(10) << left << concert[i].priceForUnit
+				<< setw(20) << left << concert[i].place
+				<< setw(8) << left << concert[i].amount << endl;
+		}
+		concertsFile.close();
+		//rewriteConcerts(concert);
 		cout << "0. Âûõîä";
 		do {
 			key = _getch();
 		} while (key != 48);
 		system("cls");
+
 	}
 }
 
 void concertCRUD(concerts*& concert, string& login, tickets*& ticket) {
 	char key;
 	do {
+		system("cls");
 		cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t|   ÐÀÁÎÒÀ Ñ ÄÀÍÍÛÌÈ ÊÎÍÖÅÐÒÎÂ ÏÎ ID  |\n";

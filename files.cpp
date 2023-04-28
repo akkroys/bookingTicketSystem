@@ -157,7 +157,6 @@ void rewriteConcerts(concerts*& concert) {
 	for (counter = 0; concertFile.getline(buffer, 90); counter++);
 	concertFile.close();
 	ofstream concertsFile (CONCERTS_INFO);
-	concert = new concerts[counter];
 
 	for (int i = 0; i < counter; i++) {
 		concertsFile << setw(8) << left << concert[i].id
@@ -196,6 +195,17 @@ void addTickets(string login, string concertID, int amount) {
 	addTicketsData.close();
 }
 
-void deleteConcert(string id, string filename) {
-
+void rewriteTickets(tickets*& ticket) {
+	ifstream ticketsFile(BOOKING_INFO, ios::in);
+	char buffer[120];
+	int counter;
+	for (counter = 0; ticketsFile.getline(buffer, 120); counter++);
+	ticketsFile.close();
+	ofstream ticketFile(BOOKING_INFO);
+	for (int i = 0; i < counter; i++) {
+		ticketFile << setw(15) << left << ticket[i].login
+			<< setw(8) << left << ticket[i].concertID
+			<< setw(8) << left << ticket[i].amount << endl;
+	}
+	ticketFile.close();
 }

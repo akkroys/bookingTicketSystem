@@ -29,7 +29,8 @@ void bookingTickets(concerts*& concert, string& login, tickets*& ticket) {
 					else flagT = true;
 				} while (!flagT);
 				addTickets(login, concertID, amount);
-				editStrConcert(concertID, concert[i].amount - amount);
+				concert[i].amount -= amount;
+				rewriteConcerts(concert);
 				break;
 			}
 		}

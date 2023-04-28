@@ -178,7 +178,7 @@ string enterPhone() {
 void registration(users*& user)
 {
 	system("cls");
-	int key, role;
+	int role;
 	string login, surname, name, password, passwordConfirm, email, phoneNumber, keyW;
 
 	//cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";

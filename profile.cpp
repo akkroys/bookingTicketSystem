@@ -67,7 +67,28 @@ void cancelReservation(concerts*& concert, string& login, tickets*& ticket) {
 					}
 					else flagAmount = true;
 				} while (!flagAmount);
-				ticket[i].amount -= amount;
+				// из тикетов удалить запись, если количество билетов совпадает, если не совпадает, отредачить. настроить как разные функции
+				if (ticket[i].amount == amount) {
+					//delete record. логин и айдишник концерта найдены во внешнем цикле
+					for (int j = i; j < numberOfBookings - 1; j++) {
+						ticket[j].login = ticket[j + 1].login;
+						ticket[j].concertID = ticket[j + 1].concertID;
+						ticket[j].amount = ticket[j + 1].amount;
+					}
+					--numberOfBookings;
+					ofstream ticketFile(BOOKING_INFO);
+					for (int i = 0; i < numberOfBookings; i++) {
+						ticketFile << setw(15) << left << ticket[i].login
+							<< setw(8) << left << ticket[i].concertID
+							<< setw(8) << left << ticket[i].amount << endl;
+					}
+					ticketFile.close();
+				}
+				else {
+					//edit record
+					ticket[i].amount -= amount;
+					rewriteTickets(ticket);
+				}
 				cout << "Бронь " << amount << " билетов на концерт " << ticket[i].concertID << " была отменена!" << endl;
 				editStrConcert(concert[i].id, concert[i].amount + amount);
 			}
@@ -123,10 +144,10 @@ void boockedTickets(users*& user, concerts*& concert, string& login, tickets*& t
 }
 
 void userProfile(users*& user, concerts*& concert, string& login, tickets*& ticket) {
-	system("cls");
 	char key;
 
 	do {
+		system("cls");
 		cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t|             МОЙ ПРОФИЛЬ             |\n";
