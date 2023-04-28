@@ -67,9 +67,7 @@ void cancelReservation(concerts*& concert, string& login, tickets*& ticket) {
 					}
 					else flagAmount = true;
 				} while (!flagAmount);
-				// из тикетов удалить запись, если количество билетов совпадает, если не совпадает, отредачить. настроить как разные функции
 				if (ticket[i].amount == amount) {
-					//delete record. логин и айдишник концерта найдены во внешнем цикле
 					for (int j = i; j < numberOfBookings - 1; j++) {
 						ticket[j].login = ticket[j + 1].login;
 						ticket[j].concertID = ticket[j + 1].concertID;
@@ -85,12 +83,16 @@ void cancelReservation(concerts*& concert, string& login, tickets*& ticket) {
 					ticketFile.close();
 				}
 				else {
-					//edit record
 					ticket[i].amount -= amount;
 					rewriteTickets(ticket);
 				}
 				cout << "Бронь " << amount << " билетов на концерт " << ticket[i].concertID << " была отменена!" << endl;
-				editStrConcert(concert[i].id, concert[i].amount + amount);
+				for (int j = 0; j < numberOfConcerts; j++) {
+					if (ticket[i].concertID == concert[j].id) {
+						editStrConcert(concert[j].id, concert[j].amount + amount);
+						break;
+					}
+				}
 			}
 		}
 	}

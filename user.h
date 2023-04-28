@@ -18,6 +18,7 @@ void searchByPrice(concerts*& concert);
 void sortMenu(concerts*& concert);
 void sortByDate(concerts*& concert);
 void sortByAlphabet(concerts*& concert);
+void sortByPrice(concerts*& concert);
 
 void userProfile(users*& user, concerts*& concert, string& login, tickets*& ticket);
 void personalInformation(users*& user, string& login);

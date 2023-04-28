@@ -5,6 +5,7 @@ void bookingTickets(concerts*& concert, string& login, tickets*& ticket) {
 	string concertID;
 	int counter = 0, amount = 0;
 	bool flag, flagT = false;
+	char key;
 	int numberOfConcerts = concertData(concert);
 	do {
 		flag = false;
@@ -24,7 +25,12 @@ void bookingTickets(concerts*& concert, string& login, tickets*& ticket) {
 					cout << "Ââåäèòå æåëàåìîå êîëè÷åñòâî áèëåòîâ: ";
 					amount = checkInt(amount);
 					if (amount > concert[i].amount || amount <= 0) {
-						cout << "Êîëè÷åñòâî çàáðîíèðîâàííûõ áèëåòîâ ìîæåò áûòü îò 1 äî " << concert[i].amount << "!" << endl;
+						cout << "Ââåäåííîå êîëè÷åñòâî áèëåòîâ íå ìîæåò áûòü çàáðîíèðîâàíî!" << endl;
+						cout << "0. Âûõîä";
+						do {
+							key = _getch();
+						} while (key != 48);
+						return;
 					}
 					else flagT = true;
 				} while (!flagT);
@@ -70,12 +76,14 @@ void currentList(concerts*& concert, string& login, tickets*& ticket) {
 	else {
 		for (int i = 0; i < numberOfConcerts; i++) {
 			if (concert[i].date >= currDate) {
-				cout << "| " << setw(8) << left << concert[i].id << " | "
-					<< setw(25) << left << concert[i].name << " | "
-					<< setw(12) << left << concert[i].date << " | "
-					<< setw(10) << left << concert[i].priceForUnit << " | "
-					<< setw(20) << left << concert[i].place << " | " << endl;
-				cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+				if (concert[i].amount != 0) {
+					cout << "| " << setw(8) << left << concert[i].id << " | "
+						<< setw(25) << left << concert[i].name << " | "
+						<< setw(12) << left << concert[i].date << " | "
+						<< setw(10) << left << concert[i].priceForUnit << " | "
+						<< setw(20) << left << concert[i].place << " | " << endl;
+					cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+				}
 			}
 		}
 
@@ -288,6 +296,39 @@ void searchMenu(concerts*& concert) {
 	} while (key != 48);
 }
 
+void sortByPrice(concerts*& concert) {
+	system("cls");
+	int numberOfConcerts = concertData(concert);
+	char key;
+	string temp;
+	concerts* temporary = new concerts[numberOfConcerts];
+	for (int i = 0; i < numberOfConcerts; i++) {
+		temporary[i] = concert[i];
+	}
+	cout << " —————————————————————————————————————————————————————————————————————————————————————————\n"
+		<< "|    ID    |          Íàçâàíèå         |     Äàòà     | Öåíà (BYN) |   Ãîðîä ïðîâåäåíèÿ   |\n"
+		<< " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	for (int i = 0; i < numberOfConcerts; i++) {
+		int j = i;
+		while (j > 0 && string_to_double(temporary[j].priceForUnit) < string_to_double(temporary[j - 1].priceForUnit)) {
+			swap(temporary[j], temporary[j - 1]);
+			j--;
+		}
+	}
+	for (int i = 0; i < numberOfConcerts; i++) {
+		cout << "| " << setw(8) << left << temporary[i].id << " | "
+			<< setw(25) << left << temporary[i].name << " | "
+			<< setw(12) << left << temporary[i].date << " | "
+			<< setw(10) << left << temporary[i].priceForUnit << " | "
+			<< setw(20) << left << temporary[i].place << " | " << endl;
+		cout << " —————————————————————————————————————————————————————————————————————————————————————————\n";
+	}
+	cout << "0. Âûõîä";
+	do {
+		key = _getch();
+	} while (key != 48);
+}
+
 void sortByAlphabet(concerts*& concert) {
 	system("cls");
 	int numberOfConcerts = concertData(concert);
@@ -355,26 +396,28 @@ void sortByDate(concerts*& concert) {
 }
 
 void sortMenu(concerts*& concert) {
-	system("cls");
 	char key;
 
 	do {
+		system("cls");
 		cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t|             ÑÎÐÒÈÐÎÂÊÀ              |\n";
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t|   1. Â àëôàâèòíîì ïîðÿäêå           |" << endl
 			<< "\t\t\t\t\t|   2. Ïî äàòå ïðîâåäåíèÿ             |" << endl
+			<< "\t\t\t\t\t|   3. Ïî öåíå                        |" << endl
 			<< "\t\t\t\t\t|   0. Âûõîä                          |" << endl;
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t———————————————————————————————————————\n\n\n\n\n\n\n\n\n\n\n";
 
 		do {
 			key = _getch();
-		} while (key != 48 && key != 49 && key != 50);
+		} while (key != 48 && key != 49 && key != 50 && key!= 51);
 
 		if (key == 49) sortByAlphabet(concert);
 		if (key == 50) sortByDate(concert);
+		if (key == 51) sortByPrice(concert);
 
 	} while (key != 48);
 }

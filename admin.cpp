@@ -230,12 +230,12 @@ void usersDatabase(users*& user, concerts*& concert, tickets*& ticket) {
 	int numberOfUsers = usersData(user);
 	int numberOfBookings = tickectsData(ticket);
 	int numberOfConcerts = concertData(concert);
-
+	cout << "Ñïèñîê ïîëüçîâàòåëåé, èìåþùèõ áðîíü:" << endl;
 	cout << " ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————\n"
 		<< "|      Ëîãèí      |      Ôàìèëèÿ      |        Èìÿ        |        Email         | Íîìåð òåëåô. | ID êîíö.|  Áèëåòû  |\n"
 		<< " ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————\n";
 	for (int i = 0; i < numberOfUsers; i++) {
-		if (user[i].role == 2) { // +  || user[i].role == 1 ?
+		if (user[i].role == 2 || user[i].role == 1) {
 			for (int j = 0; j < numberOfBookings; j++) {
 				if (user[i].login == ticket[j].login) {
 					cout << "| " << setw(15) << left << user[i].login << " | "
@@ -257,16 +257,17 @@ void usersDatabase(users*& user, concerts*& concert, tickets*& ticket) {
 }
 
 void adminMenu(users*& user, concerts*& concert, string& login, tickets*& ticket) {
-	system("cls");
+
 	char key;
 	do {
+		system("cls");
 		cout << "\n\n\n\n\n\n\n\n\n\t\t\t\t\t———————————————————————————————————————\n";
 		cout << "\t\t\t\t\t|                                     |\n";
-		cout << "\t\t\t\t\t|          ÌÅÍÞ ÀÄÌÈÍÈÑÒÐÀÒÎÐÀ        |\n";
+		cout << "\t\t\t\t\t|        ÌÅÍÞ ÀÄÌÈÍÈÑÒÐÀÒÎÐÀ          |\n";
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t|   1. Ðàáîòà ñ äàííûìè êîíöåðòîâ     |" << endl
 			<< "\t\t\t\t\t|   2. Áàçà äàííûõ ïîëüçîâàòåëåé      |" << endl
-			<< "\t\t\t\t\t|   3. Ïîëüçîâàòåëüñêèé ôóíêöèîíàë    |" << endl
+			<< "\t\t\t\t\t|   3. Ïîëüçîâàòåëüñêîå ìåíþ          |" << endl
 			<< "\t\t\t\t\t|   0. Âûõîä                          |" << endl;
 		cout << "\t\t\t\t\t|                                     |\n";
 		cout << "\t\t\t\t\t———————————————————————————————————————\n\n\n\n\n\n\n\n\n\n\n";

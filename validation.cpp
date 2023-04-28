@@ -93,7 +93,7 @@ bool isDateValid(string& date) {
 }
 
 bool isPriceValid(string& price) {
-    regex statement("[+-]?([0-9]*[.])?[0-9]+");
+    regex statement("([0-9]*[.])?[0-9]+");
     bool check = regex_match(price, statement);
     return check;
 }
